@@ -1,6 +1,6 @@
 services:
-  echo_app:
-    container_name: echo_demo
+  user-service:
+    container_name: user-service
     build: .
     ports:
       - ${EXPOSE_PORT}:${PORT}
@@ -17,11 +17,11 @@ services:
       - WAIT_BEFORE_HOSTS=15
       - WAIT_SLEEP_INTERVAL=3
     networks:
-      - echo-demo-stack
+      - user-service-network
 
-  echo_mysql:
+  mysql:
     image: mysql:8.0
-    container_name: echo_db
+    container_name: mysql_db
     ports:
       - ${EXPOSE_DB_PORT}:${DB_PORT}
     environment:
@@ -33,11 +33,11 @@ services:
     volumes:
       - database_mysql:/var/lib/mysql
     networks:
-      - echo-demo-stack
+      - user-service-network
 
 volumes:
   database_mysql:
 
 networks:
-  echo-demo-stack:
+  user-service-network:
     driver: bridge
