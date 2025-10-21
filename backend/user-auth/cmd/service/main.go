@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/nix-united/golang-echo-boilerplate/docs"
 	"github.com/nix-united/golang-echo-boilerplate/internal/config"
 	"github.com/nix-united/golang-echo-boilerplate/internal/db"
 	"github.com/nix-united/golang-echo-boilerplate/internal/repositories"
@@ -20,7 +21,6 @@ import (
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/token"
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/user"
 	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
-	"github.com/swaggo/swag/example/basic/docs"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -62,8 +62,6 @@ func run() error {
 	if err := env.Parse(&cfg); err != nil {
 		return fmt.Errorf("parse env: %w", err)
 	}
-
-	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
 
 	if err := slogx.Init(cfg.Logger); err != nil {
 		return fmt.Errorf("init logger: %w", err)
