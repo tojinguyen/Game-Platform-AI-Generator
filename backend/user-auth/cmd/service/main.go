@@ -9,18 +9,18 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/nix-united/golang-echo-boilerplate/docs"
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
-	"github.com/nix-united/golang-echo-boilerplate/internal/db"
-	"github.com/nix-united/golang-echo-boilerplate/internal/repositories"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/handlers"
-	"github.com/nix-united/golang-echo-boilerplate/internal/server/routes"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/auth"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/oauth"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/token"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/user"
-	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
+	_ "github.com/game-platform-ai/golang-echo-boilerplate/docs"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/db"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/repositories"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/routes"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/auth"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/oauth"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/slogx"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -33,19 +33,19 @@ import (
 
 const shutdownTimeout = 20 * time.Second
 
-//	@title			Echo Demo App
+//	@title			User Auth API
 //	@version		1.0
-//	@description	This is a demo version of Echo app.
+//	@description	API for user authentication and management.
 
-//	@contact.name	NIX Solutions
-//	@contact.url	https://www.nixsolutions.com/
-//	@contact.email	ask@nixsolutions.com
+//	@contact.name	Game Platform AI
+//	@contact.url	https://github.com/tojinguyen/Game-Platform-AI-Generator
+//	@contact.email	support@gameplatform.ai
 
 //	@securityDefinitions.apikey	ApiKeyAuth
 //	@in							header
 //	@name						Authorization
 
-// @BasePath	/
+// @BasePath	/api/external/v1
 func main() {
 	if err := run(); err != nil {
 		slog.Error("Service run error", "err", err.Error())

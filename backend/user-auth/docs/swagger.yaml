@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api/external/v1
 definitions:
   requests.LoginRequest:
     properties:
@@ -68,11 +68,11 @@ definitions:
     type: object
 info:
   contact:
-    email: ask@nixsolutions.com
-    name: NIX Solutions
-    url: https://www.nixsolutions.com/
-  description: This is a demo version of Echo app.
-  title: Echo Demo App
+    email: support@gameplatform.ai
+    name: Game Platform AI
+    url: https://github.com/tojinguyen/Game-Platform-AI-Generator
+  description: API for user authentication and management.
+  title: User Auth API
   version: "1.0"
 paths:
   /google-oauth:

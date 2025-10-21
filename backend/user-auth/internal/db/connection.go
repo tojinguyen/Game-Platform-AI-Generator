@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

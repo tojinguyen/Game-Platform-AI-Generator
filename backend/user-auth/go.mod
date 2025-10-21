@@ -1,4 +1,4 @@
-module github.com/nix-united/golang-echo-boilerplate
+module github.com/game-platform-ai/golang-echo-boilerplate
 
 go 1.25.1
 

@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
 )
 
 func Init(config config.LogConfig) (err error) {

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 
 	"gorm.io/gorm"
 )

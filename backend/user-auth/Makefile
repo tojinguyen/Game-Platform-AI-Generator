@@ -19,7 +19,7 @@ lint-fix:
 	@echo "⚠️️ run \"make lint-check\" again to check what did not fix yet"
 
 organize-imports:
-	@gci write --custom-order -s standard -s "prefix(github.com/nix-united/golang-echo-boilerplate)" -s default --skip-generated --skip-vendor .
+	@gci write --custom-order -s standard -s "prefix(github.com/game-platform-ai/golang-echo-boilerplate)" -s default --skip-generated --skip-vendor .
 
 lint:
 	go tool golangci-lint run ./...

@@ -10,9 +10,9 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "NIX Solutions",
-            "url": "https://www.nixsolutions.com/",
-            "email": "ask@nixsolutions.com"
+            "name": "Game Platform AI",
+            "url": "https://github.com/tojinguyen/Game-Platform-AI-Generator",
+            "email": "support@gameplatform.ai"
         },
         "version": "{{.Version}}"
     },
@@ -297,10 +297,10 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/",
+	BasePath:         "/api/external/v1",
 	Schemes:          []string{},
-	Title:            "Echo Demo App",
-	Description:      "This is a demo version of Echo app.",
+	Title:            "User Auth API",
+	Description:      "API for user authentication and management.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

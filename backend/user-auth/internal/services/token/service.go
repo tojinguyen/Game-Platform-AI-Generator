@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 
 	"github.com/golang-jwt/jwt/v5"
 )

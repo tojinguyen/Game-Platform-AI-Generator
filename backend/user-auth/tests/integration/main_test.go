@@ -9,10 +9,10 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/config"
-	"github.com/nix-united/golang-echo-boilerplate/internal/db"
-	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
-	"github.com/nix-united/golang-echo-boilerplate/tests/setup"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/db"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/slogx"
+	"github.com/game-platform-ai/golang-echo-boilerplate/tests/setup"
 
 	"gorm.io/gorm"
 )

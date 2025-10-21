@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/nix-united/golang-echo-boilerplate/internal/models"
-	"github.com/nix-united/golang-echo-boilerplate/internal/requests"
-	"github.com/nix-united/golang-echo-boilerplate/internal/responses"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
 
 	"github.com/labstack/echo/v4"
 )

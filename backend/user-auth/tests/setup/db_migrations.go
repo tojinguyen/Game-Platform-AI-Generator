@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/nix-united/golang-echo-boilerplate/migrations"
+	"github.com/game-platform-ai/golang-echo-boilerplate/migrations"
 
 	"github.com/pressly/goose/v3"
 )

@@ -1,16 +1,16 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a demo version of Echo app.",
-        "title": "Echo Demo App",
+        "description": "API for user authentication and management.",
+        "title": "User Auth API",
         "contact": {
-            "name": "NIX Solutions",
-            "url": "https://www.nixsolutions.com/",
-            "email": "ask@nixsolutions.com"
+            "name": "Game Platform AI",
+            "url": "https://github.com/tojinguyen/Game-Platform-AI-Generator",
+            "email": "support@gameplatform.ai"
         },
         "version": "1.0"
     },
-    "basePath": "/",
+    "basePath": "/api/external/v1",
     "paths": {
         "/google-oauth": {
             "post": {
