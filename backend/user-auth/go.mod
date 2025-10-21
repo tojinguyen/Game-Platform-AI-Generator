@@ -4,7 +4,6 @@ go 1.25.1
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
-	github.com/ccoveille/go-safecast v1.6.1
 	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/golang-jwt/jwt/v5 v5.2.2

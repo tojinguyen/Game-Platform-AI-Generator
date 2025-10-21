@@ -10,7 +10,6 @@ import (
 )
 
 type Handlers struct {
-	PostHandler     *handlers.PostHandlers
 	AuthHandler     *handlers.AuthHandler
 	OAuthHandler    *handlers.OAuthHandler
 	RegisterHandler *handlers.RegisterHandler
@@ -31,11 +30,6 @@ func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Han
 	r := engine.Group("", middleware.NewRequestDebugger())
 
 	r.Use(handlers.EchoJWTMiddleware)
-
-	r.GET("/posts", handlers.PostHandler.GetPosts)
-	r.POST("/posts", handlers.PostHandler.CreatePost)
-	r.DELETE("/posts/:id", handlers.PostHandler.DeletePost)
-	r.PUT("/posts/:id", handlers.PostHandler.UpdatePost)
 
 	return nil
 }

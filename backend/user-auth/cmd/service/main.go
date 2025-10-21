@@ -17,7 +17,6 @@ import (
 	"github.com/nix-united/golang-echo-boilerplate/internal/server/routes"
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/auth"
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/oauth"
-	"github.com/nix-united/golang-echo-boilerplate/internal/services/post"
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/token"
 	"github.com/nix-united/golang-echo-boilerplate/internal/services/user"
 	"github.com/nix-united/golang-echo-boilerplate/internal/slogx"
@@ -80,9 +79,6 @@ func run() error {
 	userRepository := repositories.NewUserRepository(gormDB)
 	userService := user.NewService(userRepository)
 
-	postRepository := repositories.NewPostRepository(gormDB)
-	postService := post.NewService(postRepository)
-
 	provider, err := oidc.NewProvider(context.Background(), "https://accounts.google.com")
 	if err != nil {
 		return fmt.Errorf("oidc.NewProvider: %w", err)
@@ -101,7 +97,6 @@ func run() error {
 	authService := auth.NewService(userService, tokenService)
 	oAuthService := oauth.NewService(verifier, tokenService, userService)
 
-	postHandler := handlers.NewPostHandlers(postService)
 	authHandler := handlers.NewAuthHandler(authService)
 	oAuthHandler := handlers.NewOAuthHandler(oAuthService)
 	registerHandler := handlers.NewRegisterHandler(userService)
@@ -118,7 +113,6 @@ func run() error {
 
 	engine := echo.New()
 	err = routes.ConfigureRoutes(traceStarter, engine, routes.Handlers{
-		PostHandler:       postHandler,
 		AuthHandler:       authHandler,
 		OAuthHandler:      oAuthHandler,
 		RegisterHandler:   registerHandler,
