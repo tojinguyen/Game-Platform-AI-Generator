@@ -8,11 +8,11 @@ services:
     volumes:
       - ./:/app/
     depends_on:
-      - echo_mysql
+      - mysql
     env_file:
       - .env
     environment:
-      - DB_CONNECTION=${DB_USER}:${DB_PASSWORD}@tcp(echo_mysql:${DB_PORT})/${DB_NAME}
+      - DB_CONNECTION=${DB_USER}:${DB_PASSWORD}@tcp(mysql:${DB_PORT})/${DB_NAME}
       - WAIT_HOSTS=${DB_HOST}:${DB_PORT}
       - WAIT_BEFORE_HOSTS=15
       - WAIT_SLEEP_INTERVAL=3
