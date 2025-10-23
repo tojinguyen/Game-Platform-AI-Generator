@@ -9,6 +9,7 @@ import (
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	"github.com/google/uuid"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,7 +17,7 @@ import (
 //go:generate go tool mockgen -source=$GOFILE -destination=service_mock_test.go -package=${GOPACKAGE}_test -typed=true
 
 type userService interface {
-	GetByID(ctx context.Context, id uint) (models.User, error)
+	GetByID(ctx context.Context, id uuid.UUID) (models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (models.User, error)
 }
 
@@ -44,7 +45,7 @@ func (s *Service) GenerateToken(ctx context.Context, request *requests.LoginRequ
 		return nil, fmt.Errorf("get user by email: %w", err)
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(request.Password)); err != nil {
 		return nil, errors.Join(fmt.Errorf("compare hash and passowrd: %w", err), models.ErrInvalidPassword)
 	}
 

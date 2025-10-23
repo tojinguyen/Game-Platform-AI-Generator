@@ -9,12 +9,12 @@ import (
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type serviceMocks struct {
@@ -50,10 +50,10 @@ func TestService_GenerateToken(t *testing.T) {
 	}
 
 	user := models.User{
-		Model:    gorm.Model{ID: 1},
-		Email:    "example@email.com",
-		Name:     "name",
-		Password: string(password),
+		ID:           uuid.New(),
+		Email:        "example@email.com",
+		FullName:     "name",
+		PasswordHash: string(password),
 	}
 
 	wantResponse := &responses.LoginResponse{
@@ -121,15 +121,16 @@ func TestService_RefreshToken(t *testing.T) {
 		Token: "token",
 	}
 
+	userID := uuid.New()
 	claims := &token.JwtCustomRefreshClaims{
-		ID: 1,
+		ID: userID,
 	}
 
 	user := models.User{
-		Model:    gorm.Model{ID: 1},
-		Email:    "example@email.com",
-		Name:     "name",
-		Password: "password",
+		ID:           userID,
+		Email:        "example@email.com",
+		FullName:     "name",
+		PasswordHash: "password",
 	}
 
 	wantResponse := &responses.LoginResponse{

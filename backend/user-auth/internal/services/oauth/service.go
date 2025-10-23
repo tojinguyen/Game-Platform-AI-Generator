@@ -57,8 +57,8 @@ func (s Service) GoogleOAuth(ctx context.Context, token string) (accessToken, re
 		}
 
 		user = models.User{
-			Email: claims.Email,
-			Name:  claims.Name,
+			Email:    claims.Email,
+			FullName: claims.Name,
 		}
 
 		oAuthProvider := models.OAuthProviders{

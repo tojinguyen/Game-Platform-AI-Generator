@@ -6,6 +6,7 @@ import (
 
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
+	"github.com/google/uuid"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,7 +15,7 @@ import (
 
 type userRepository interface {
 	Create(ctx context.Context, user *models.User) error
-	GetByID(ctx context.Context, id uint) (models.User, error)
+	GetByID(ctx context.Context, id uuid.UUID) (models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (models.User, error)
 	CreateUserAndOAuthProvider(ctx context.Context, user *models.User, oauthProvider *models.OAuthProviders) error
 }
@@ -37,9 +38,9 @@ func (s *Service) Register(ctx context.Context, request *requests.RegisterReques
 	}
 
 	user := &models.User{
-		Email:    request.Email,
-		Name:     request.Name,
-		Password: string(encryptedPassword),
+		Email:        request.Email,
+		FullName:     request.Name,
+		PasswordHash: string(encryptedPassword),
 	}
 
 	if err := s.userRepository.Create(ctx, user); err != nil {
@@ -49,7 +50,7 @@ func (s *Service) Register(ctx context.Context, request *requests.RegisterReques
 	return nil
 }
 
-func (s *Service) GetByID(ctx context.Context, id uint) (models.User, error) {
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (models.User, error) {
 	user, err := s.userRepository.GetByID(ctx, id)
 	if err != nil {
 		return models.User{}, fmt.Errorf("get user by id from repository: %w", err)

@@ -6,18 +6,19 @@ import (
 	"time"
 
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
+	"github.com/google/uuid"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type JwtCustomClaims struct {
-	Name string `json:"name"`
-	ID   uint   `json:"id"`
+	FullName string    `json:"fullName"`
+	ID       uuid.UUID `json:"id"`
 	jwt.RegisteredClaims
 }
 
 type JwtCustomRefreshClaims struct {
-	ID uint `json:"id"`
+	ID uuid.UUID `json:"id"`
 	jwt.RegisteredClaims
 }
 
@@ -49,8 +50,8 @@ func (s *Service) CreateAccessToken(_ context.Context, user *models.User) (acces
 	expiresAt := s.now().Add(s.accessTokenDuration)
 
 	claims := &JwtCustomClaims{
-		Name: user.Name,
-		ID:   user.ID,
+		FullName: user.FullName,
+		ID:       user.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 		},

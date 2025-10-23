@@ -5,6 +5,7 @@ import (
 
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/repositories"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -14,9 +15,9 @@ func TestUserRepository(t *testing.T) {
 	userRepository := repositories.NewUserRepository(gormDB)
 
 	newUser := &models.User{
-		Email:    "test_user_repository@email.com",
-		Name:     "test_user_repository",
-		Password: "test_user_repository",
+		Email:        "test_user_repository@email.com",
+		FullName:     "test_user_repository",
+		PasswordHash: "test_user_repository",
 	}
 
 	t.Run("It should create an user", func(t *testing.T) {
@@ -26,7 +27,7 @@ func TestUserRepository(t *testing.T) {
 	})
 
 	t.Run("It should fetch created user", func(t *testing.T) {
-		gotUser, err := userRepository.GetByID(t.Context(), newUser.ID)
+		gotUser, err := userRepository.GetUserByEmail(t.Context(), newUser.Email)
 		require.NoError(t, err)
 
 		newUser.CreatedAt = gotUser.CreatedAt
@@ -36,7 +37,8 @@ func TestUserRepository(t *testing.T) {
 	})
 
 	t.Run("It should return an error if user with such ID not found", func(t *testing.T) {
-		_, err := userRepository.GetByID(t.Context(), 999)
+		nonExistentID := uuid.New()
+		_, err := userRepository.GetByID(t.Context(), nonExistentID)
 		assert.ErrorIs(t, err, models.ErrUserNotFound)
 	})
 

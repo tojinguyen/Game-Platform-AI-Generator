@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
@@ -26,7 +27,7 @@ func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
 	return nil
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id uint) (models.User, error) {
+func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (models.User, error) {
 	var user models.User
 	err := r.db.WithContext(ctx).Where("id = ?", id).Take(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -7,6 +7,7 @@ import (
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user"
+	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,18 +29,18 @@ func TestService_Register(t *testing.T) {
 	}
 
 	wantUser := &models.User{
-		Email: "example@email.com",
-		Name:  "name",
+		Email:    "example@email.com",
+		FullName: "name",
 	}
 
 	userRepository.
 		EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		DoAndReturn(func(_ context.Context, got *models.User) error {
-			err := bcrypt.CompareHashAndPassword([]byte(got.Password), []byte("some-password"))
+			err := bcrypt.CompareHashAndPassword([]byte(got.PasswordHash), []byte("some-password"))
 			require.NoError(t, err)
 
-			wantUser.Password = got.Password
+			wantUser.PasswordHash = got.PasswordHash
 
 			assert.Equal(t, wantUser, got)
 
@@ -56,17 +57,18 @@ func TestService_GetByID(t *testing.T) {
 	userService := user.NewService(userRepository)
 
 	wantUser := models.User{
-		Email:    "example@email.com",
-		Name:     "name",
-		Password: "hashed password",
+		Email:        "example@email.com",
+		FullName:     "name",
+		PasswordHash: "hashed password",
 	}
 
+	testID := uuid.New()
 	userRepository.
 		EXPECT().
-		GetByID(gomock.Any(), uint(123)).
+		GetByID(gomock.Any(), testID).
 		Return(wantUser, nil)
 
-	gotUser, err := userService.GetByID(t.Context(), 123)
+	gotUser, err := userService.GetByID(t.Context(), testID)
 	require.NoError(t, err)
 
 	assert.Equal(t, wantUser, gotUser)
@@ -78,9 +80,9 @@ func TestService_GetUserByEmail(t *testing.T) {
 	userService := user.NewService(userRepository)
 
 	wantUser := models.User{
-		Email:    "example@gmail.com",
-		Name:     "name",
-		Password: "hashed password",
+		Email:        "example@gmail.com",
+		FullName:     "name",
+		PasswordHash: "hashed password",
 	}
 
 	userRepository.

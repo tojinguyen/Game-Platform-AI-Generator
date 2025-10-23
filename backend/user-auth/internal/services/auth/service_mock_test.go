@@ -15,6 +15,7 @@ import (
 
 	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 	token "github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -43,7 +44,7 @@ func (m *MockuserService) EXPECT() *MockuserServiceMockRecorder {
 }
 
 // GetByID mocks base method.
-func (m *MockuserService) GetByID(ctx context.Context, id uint) (models.User, error) {
+func (m *MockuserService) GetByID(ctx context.Context, id uuid.UUID) (models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
 	ret0, _ := ret[0].(models.User)
@@ -70,13 +71,13 @@ func (c *MockuserServiceGetByIDCall) Return(arg0 models.User, arg1 error) *Mocku
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockuserServiceGetByIDCall) Do(f func(context.Context, uint) (models.User, error)) *MockuserServiceGetByIDCall {
+func (c *MockuserServiceGetByIDCall) Do(f func(context.Context, uuid.UUID) (models.User, error)) *MockuserServiceGetByIDCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockuserServiceGetByIDCall) DoAndReturn(f func(context.Context, uint) (models.User, error)) *MockuserServiceGetByIDCall {
+func (c *MockuserServiceGetByIDCall) DoAndReturn(f func(context.Context, uuid.UUID) (models.User, error)) *MockuserServiceGetByIDCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

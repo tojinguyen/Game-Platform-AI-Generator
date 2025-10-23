@@ -6,11 +6,11 @@ import (
 
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	"github.com/google/uuid"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gorm.io/gorm"
 )
 
 func TestService(t *testing.T) {
@@ -26,23 +26,24 @@ func TestService(t *testing.T) {
 	accessTokenSecret := []byte("access-secret")
 	refreshTokenSecret := []byte("refresh-secret")
 
+	userID := uuid.New()
 	user := &models.User{
-		Model:    gorm.Model{ID: 123},
-		Email:    "example@email.com",
-		Name:     "name",
-		Password: "password",
+		ID:           userID,
+		Email:        "example@email.com",
+		FullName:     "name",
+		PasswordHash: "password",
 	}
 
 	wantAccessClaims := &token.JwtCustomClaims{
-		Name: "name",
-		ID:   123,
+		FullName: "name",
+		ID:       userID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(currentTime.Add(accessTokenDuration)),
 		},
 	}
 
 	wantRefreshClaims := &token.JwtCustomRefreshClaims{
-		ID: 123,
+		ID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(currentTime.Add(refreshTokenDuration)),
 		},
