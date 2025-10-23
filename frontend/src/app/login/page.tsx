@@ -1,23 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { login, googleOAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { login: authLogin, isLoggedIn, isLoading, isClient } = useAuth();
+
+  useEffect(() => {
+    if (isClient && !isLoading && isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, isLoading, isClient, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     try {
       const data = await login({ email, password });
-      // Handle successful login, e.g., store token and redirect
+      // Handle successful login with auth hook
       console.log("Login successful", data);
+      
+      // Mock user data - in real app, get from API response
+      const userData = {
+        name: email.split('@')[0], // Simple name extraction
+        email: email,
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
+      };
+      
+      authLogin(userData, {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken
+      });
+      
       router.push("/"); // Redirect to homepage or dashboard
     } catch (err) {
       setError("Failed to login. Please check your credentials.");
@@ -34,12 +55,36 @@ export default function LoginPage() {
       const data = await googleOAuth({ token: googleToken });
       // Handle successful login
       console.log("Google login successful", data);
+      
+      // Mock user data - in real app, get from API response
+      const userData = {
+        name: "Google User",
+        email: "user@gmail.com",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
+      };
+      
+      authLogin(userData, {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken
+      });
+      
       router.push("/");
     } catch (err) {
       setError("Failed to login with Google.");
       console.error(err);
     }
   };
+
+  if (!isClient || isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
