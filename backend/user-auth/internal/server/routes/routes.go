@@ -6,6 +6,7 @@ import (
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/slogx"
 
 	"github.com/labstack/echo/v4"
+	echomiddleware "github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -18,6 +19,13 @@ type Handlers struct {
 }
 
 func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Handlers) error {
+	// CORS middleware - cho phép tất cả origins, methods, headers
+	engine.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"*"},
+		AllowHeaders: []string{"*"},
+	}))
+
 	engine.Use(middleware.NewRequestLogger(tracer))
 
 	// Swagger documentation (không cần prefix)
