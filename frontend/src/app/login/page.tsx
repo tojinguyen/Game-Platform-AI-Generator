@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import GalaxyDecorations from "@/components/GalaxyDecorations";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -48,34 +49,48 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    // This is a placeholder. In a real app, you would use a library like
-    // react-google-login to get the token.
-    const googleToken = "mock-google-token";
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse
+  ) => {
     setError(null);
-    try {
-      const data = await googleOAuth({ token: googleToken });
-      // Handle successful login
-      console.log("Google login successful", data);
-      
-      // Mock user data - in real app, get from API response
-      const userData = {
-        name: "Google User",
-        email: "user@gmail.com",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
-      };
-      
-      authLogin(userData, {
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken
-      });
-      
-      router.push("/");
-    } catch (err) {
-      setError("Failed to login with Google.");
-      console.error(err);
+    console.log("Google Login Succeeded:", credentialResponse);
+    if (credentialResponse.credential) {
+      try {
+        const data = await googleOAuth({
+          token: credentialResponse.credential,
+        });
+        // Handle successful login
+        console.log("Google login successful", data);
+
+        // Mock user data - in real app, get from API response
+        const userData = {
+          name: "Google User",
+          email: "user@gmail.com",
+          avatar:
+            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+        };
+
+        authLogin(userData, {
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
+
+        router.push("/");
+      } catch (err) {
+        setError("Failed to login with Google.");
+        console.error(err);
+      }
+    } else {
+      setError("Google login failed: No credential received.");
+      console.error("Google login failed: No credential received.");
     }
   };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+    console.error("Google Login Failed");
+  };
+
 
   if (!isClient || isLoading) {
     return (
@@ -155,13 +170,13 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <div>
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full flex justify-center py-2 px-4 border border-galaxy-cyan/30 rounded-md shadow-sm text-sm font-medium text-galaxy-cyan bg-galaxy-secondary/50 hover:bg-galaxy-secondary/70 transition-all duration-300 galaxy-glow-soft hover:scale-105 cursor-pointer"
-            >
-              Login with Google
-            </button>
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              theme="filled_black"
+              width="320px"
+            />
           </div>
           <div className="text-sm text-center">
             <p className="text-galaxy-silver">

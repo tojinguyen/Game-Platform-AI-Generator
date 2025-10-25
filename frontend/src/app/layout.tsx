@@ -1,3 +1,5 @@
+"use client"
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -12,11 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Game AI Platform - AI-Powered Game Development Tools",
-  description: "Create amazing games with AI-powered tools. Generate Game Design Documents, characters, stories, and more with our comprehensive game development platform.",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <GoogleOAuthProvider clientId="501383933187-ettll7g5se489t5k2562cdr744upc0lr.apps.googleusercontent.com">
+          {children}
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
