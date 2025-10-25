@@ -21,9 +21,10 @@ type Handlers struct {
 func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Handlers) error {
 	// CORS middleware - cho phép tất cả origins, methods, headers
 	engine.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"*"},
-		AllowHeaders: []string{"*"},
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
 	}))
 
 	engine.Use(middleware.NewRequestLogger(tracer))

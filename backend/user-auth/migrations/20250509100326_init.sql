@@ -1,14 +1,14 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     
     -- Identity
     email VARCHAR(255) NOT NULL UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
-    is_verified BOOLEAN DEFAULT FALSE,
+    is_verified TINYINT(1) DEFAULT 0,
     status VARCHAR(20) DEFAULT 'ACTIVE',
     
     -- Profile
@@ -28,38 +28,34 @@ CREATE TABLE users (
     -- Timestamps
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP
-);
+    deleted_at TIMESTAMP NULL,
 
-CREATE INDEX idx_users_deleted_at ON users(deleted_at);
+    INDEX idx_users_deleted_at (deleted_at)
+);
 -- +goose StatementEnd
 
 -- +goose StatementBegin
 CREATE TABLE o_auth_providers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    user_id CHAR(36) NOT NULL,
     provider VARCHAR(255) NOT NULL,
     token TEXT NOT NULL,
-    deleted_at TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
-);
+        ON DELETE CASCADE,
 
-CREATE INDEX idx_oauth_providers_deleted_at ON o_auth_providers(deleted_at);
+    INDEX idx_oauth_providers_deleted_at (deleted_at)
+);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE posts;
+DROP TABLE o_auth_providers;
 -- +goose StatementEnd
 
 -- +goose StatementBegin
 DROP TABLE users;
--- +goose StatementEnd
-
--- +goose StatementBegin
-DROP TABLE o_auth_providers;
 -- +goose StatementEnd
