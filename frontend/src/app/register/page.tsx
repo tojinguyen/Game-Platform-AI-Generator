@@ -6,24 +6,32 @@ import { register } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import GalaxyDecorations from "@/components/GalaxyDecorations";
+import FormInput from "@/components/ui/FormInput";
+import Button from "@/components/ui/Button";
+import { ROUTES } from "@/constants";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
+    
     try {
-      const data = await register({ name, email, password });
-      console.log("Registration successful", data);
-      router.push("/login"); // Redirect to login page after successful registration
+      await register({ name, email, password });
+      console.log("Registration successful");
+      router.push(ROUTES.LOGIN);
     } catch (err) {
       setError("Failed to register. Please try again.");
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,74 +45,50 @@ export default function RegisterPage() {
           </h1>
           {error && <p className="text-galaxy-pink text-sm text-center">{error}</p>}
           <form className="space-y-6" onSubmit={handleRegister}>
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-galaxy-silver"
-              >
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 text-white bg-galaxy-secondary/50 border border-galaxy-cyan/30 rounded-md shadow-sm placeholder-galaxy-silver/60 focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan focus:bg-galaxy-secondary/70 sm:text-sm galaxy-glow-soft"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-galaxy-silver"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 text-white bg-galaxy-secondary/50 border border-galaxy-cyan/30 rounded-md shadow-sm placeholder-galaxy-silver/60 focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan focus:bg-galaxy-secondary/70 sm:text-sm galaxy-glow-soft"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-galaxy-silver"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 text-white bg-galaxy-secondary/50 border border-galaxy-cyan/30 rounded-md shadow-sm placeholder-galaxy-silver/60 focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan focus:bg-galaxy-secondary/70 sm:text-sm galaxy-glow-soft"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-galaxy-cyan to-galaxy-purple hover:from-galaxy-purple hover:to-galaxy-pink focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-galaxy-cyan transition-all duration-300 galaxy-glow-soft hover:scale-105 cursor-pointer"
-              >
-                Register
-              </button>
-            </div>
+            <FormInput
+              id="name"
+              name="name"
+              type="text"
+              label="Name"
+              autoComplete="name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <FormInput
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <FormInput
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              fullWidth
+              isLoading={isLoading}
+            >
+              Register
+            </Button>
           </form>
           <div className="text-sm text-center">
             <p className="text-galaxy-silver">
               Already have an account?{" "}
               <Link
-                href="/login"
+                href={ROUTES.LOGIN}
                 className="font-medium text-galaxy-cyan hover:text-galaxy-pink transition-colors duration-200 cursor-pointer"
               >
                 Login

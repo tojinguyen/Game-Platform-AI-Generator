@@ -8,33 +8,39 @@ import { useAuth } from "@/hooks/useAuth";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import GalaxyDecorations from "@/components/GalaxyDecorations";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import FormInput from "@/components/ui/FormInput";
+import Button from "@/components/ui/Button";
+import { ROUTES } from "@/constants";
+import { config } from "@/config";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login: authLogin, isLoggedIn, isLoading, isClient } = useAuth();
+  const { login: authLogin, isLoggedIn, isLoading: authLoading, isClient } = useAuth();
 
   useEffect(() => {
-    if (isClient && !isLoading && isLoggedIn) {
-      router.push("/");
+    if (isClient && !authLoading && isLoggedIn) {
+      router.push(ROUTES.HOME);
     }
-  }, [isLoggedIn, isLoading, isClient, router]);
+  }, [isLoggedIn, authLoading, isClient, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
+    
     try {
       const data = await login({ email, password });
-      // Handle successful login with auth hook
       console.log("Login successful", data);
       
       // Mock user data - in real app, get from API response
       const userData = {
-        name: email.split('@')[0], // Simple name extraction
+        name: email.split('@')[0],
         email: email,
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
+        avatar: config.defaults.avatar
       };
       
       authLogin(userData, {
@@ -42,32 +48,30 @@ export default function LoginPage() {
         refreshToken: data.refreshToken
       });
       
-      router.push("/"); // Redirect to homepage or dashboard
+      router.push(ROUTES.HOME);
     } catch (err) {
       setError("Failed to login. Please check your credentials.");
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleGoogleSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     setError(null);
+    setIsLoading(true);
     console.log("Google Login Succeeded:", credentialResponse);
+    
     if (credentialResponse.credential) {
       try {
-        const data = await googleOAuth({
-          token: credentialResponse.credential,
-        });
-        // Handle successful login
+        const data = await googleOAuth({ token: credentialResponse.credential });
         console.log("Google login successful", data);
 
         // Mock user data - in real app, get from API response
         const userData = {
           name: "Google User",
           email: "user@gmail.com",
-          avatar:
-            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+          avatar: config.defaults.avatar,
         };
 
         authLogin(userData, {
@@ -75,14 +79,17 @@ export default function LoginPage() {
           refreshToken: data.refreshToken,
         });
 
-        router.push("/");
+        router.push(ROUTES.HOME);
       } catch (err) {
         setError("Failed to login with Google.");
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setError("Google login failed: No credential received.");
       console.error("Google login failed: No credential received.");
+      setIsLoading(false);
     }
   };
 
@@ -91,8 +98,7 @@ export default function LoginPage() {
     console.error("Google Login Failed");
   };
 
-
-  if (!isClient || isLoading) {
+  if (!isClient || authLoading) {
     return (
       <GalaxyBackground>
         <div className="min-h-screen flex items-center justify-center">
@@ -115,50 +121,34 @@ export default function LoginPage() {
           </h1>
           {error && <p className="text-galaxy-pink text-sm text-center">{error}</p>}
           <form className="space-y-6" onSubmit={handleLogin}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-galaxy-silver"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 text-white bg-galaxy-secondary/50 border border-galaxy-cyan/30 rounded-md shadow-sm placeholder-galaxy-silver/60 focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan focus:bg-galaxy-secondary/70 sm:text-sm galaxy-glow-soft"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-galaxy-silver"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 text-white bg-galaxy-secondary/50 border border-galaxy-cyan/30 rounded-md shadow-sm placeholder-galaxy-silver/60 focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan focus:bg-galaxy-secondary/70 sm:text-sm galaxy-glow-soft"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-galaxy-cyan to-galaxy-purple hover:from-galaxy-purple hover:to-galaxy-pink focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-galaxy-cyan transition-all duration-300 galaxy-glow-soft hover:scale-105 cursor-pointer"
-              >
-                Login
-              </button>
-            </div>
+            <FormInput
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <FormInput
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              fullWidth
+              isLoading={isLoading}
+            >
+              Login
+            </Button>
           </form>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -182,7 +172,7 @@ export default function LoginPage() {
             <p className="text-galaxy-silver">
               Don&apos;t have an account?{" "}
               <Link
-                href="/register"
+                href={ROUTES.REGISTER}
                 className="font-medium text-galaxy-cyan hover:text-galaxy-pink transition-colors duration-200 cursor-pointer"
               >
                 Register

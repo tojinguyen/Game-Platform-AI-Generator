@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { config } from "@/config";
 
 interface User {
   name: string;
@@ -30,8 +31,8 @@ export function useAuth() {
     }
 
     try {
-      const token = localStorage.getItem('accessToken');
-      const userData = localStorage.getItem('userData');
+      const token = localStorage.getItem(config.storage.accessToken);
+      const userData = localStorage.getItem(config.storage.userData);
       
       if (token && userData) {
         const parsedUser = JSON.parse(userData);
@@ -57,9 +58,9 @@ export function useAuth() {
     }
 
     try {
-      localStorage.setItem('accessToken', tokens.accessToken);
-      localStorage.setItem('refreshToken', tokens.refreshToken);
-      localStorage.setItem('userData', JSON.stringify(userData));
+      localStorage.setItem(config.storage.accessToken, tokens.accessToken);
+      localStorage.setItem(config.storage.refreshToken, tokens.refreshToken);
+      localStorage.setItem(config.storage.userData, JSON.stringify(userData));
       
       setUser(userData);
       setIsLoggedIn(true);
@@ -75,9 +76,9 @@ export function useAuth() {
     }
 
     try {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userData');
+      localStorage.removeItem(config.storage.accessToken);
+      localStorage.removeItem(config.storage.refreshToken);
+      localStorage.removeItem(config.storage.userData);
       
       setUser(null);
       setIsLoggedIn(false);

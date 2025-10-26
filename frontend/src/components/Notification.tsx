@@ -30,16 +30,16 @@ export default function Notification({
   if (!isVisible) return null;
 
   const typeStyles = {
-    success: "bg-green-50 border-green-200 text-green-800 dark:bg-green-900 dark:border-green-700 dark:text-green-200",
-    error: "bg-red-50 border-red-200 text-red-800 dark:bg-red-900 dark:border-red-700 dark:text-red-200",
-    info: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200",
-    warning: "bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:border-yellow-700 dark:text-yellow-200"
+    success: "bg-gradient-to-r from-green-500/20 to-green-600/20 border-green-400/50 text-green-200 backdrop-blur-md",
+    error: "bg-gradient-to-r from-red-500/20 to-red-600/20 border-red-400/50 text-red-200 backdrop-blur-md",
+    info: "bg-gradient-to-r from-galaxy-cyan/20 to-galaxy-purple/20 border-galaxy-cyan/50 text-galaxy-cyan backdrop-blur-md",
+    warning: "bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border-yellow-400/50 text-yellow-200 backdrop-blur-md"
   };
 
   const iconStyles = {
     success: "text-green-400",
     error: "text-red-400", 
-    info: "text-blue-400",
+    info: "text-galaxy-cyan",
     warning: "text-yellow-400"
   };
 
@@ -68,7 +68,7 @@ export default function Notification({
 
   return (
     <div className="fixed top-4 right-4 z-50 max-w-sm w-full">
-      <div className={`rounded-lg border p-4 shadow-lg ${typeStyles[type]}`}>
+      <div className={`rounded-lg border p-4 shadow-galaxy galaxy-glow-soft ${typeStyles[type]}`}>
         <div className="flex items-start">
           <div className={`flex-shrink-0 ${iconStyles[type]}`}>
             {icons[type]}

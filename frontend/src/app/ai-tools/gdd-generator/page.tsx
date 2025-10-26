@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import GalaxyDecorations from "@/components/GalaxyDecorations";
+import FormInput from "@/components/ui/FormInput";
+import FormSelect from "@/components/ui/FormSelect";
+import FormTextarea from "@/components/ui/FormTextarea";
+import Button from "@/components/ui/Button";
+import { GAME_GENRES, GAME_PLATFORMS, TARGET_AUDIENCES, ROUTES } from "@/constants";
 
 export default function GDDGeneratorPage() {
   const [gameTitle, setGameTitle] = useState("");
@@ -15,26 +20,15 @@ export default function GDDGeneratorPage() {
   const [generatedGDD, setGeneratedGDD] = useState("");
   const router = useRouter();
 
-  const genres = [
-    "Action", "Adventure", "RPG", "Strategy", "Simulation", "Puzzle", 
-    "Racing", "Sports", "Fighting", "Horror", "Platformer", "Shooter"
-  ];
-
-  const platforms = [
-    "PC", "PlayStation 5", "Xbox Series X/S", "Nintendo Switch", 
-    "Mobile (iOS/Android)", "Web Browser", "VR/AR"
-  ];
-
-  const audiences = [
-    "Children (6-12)", "Teenagers (13-17)", "Young Adults (18-25)", 
-    "Adults (26-40)", "Mature (40+)", "All Ages"
-  ];
+  const genreOptions = GAME_GENRES.map(genre => ({ value: genre, label: genre }));
+  const platformOptions = GAME_PLATFORMS.map(platform => ({ value: platform, label: platform }));
+  const audienceOptions = TARGET_AUDIENCES.map(audience => ({ value: audience, label: audience }));
 
   const handleGenerateGDD = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
 
-    // Simulate API call - trong thực tế sẽ gọi API backend
+    // Simulate API call - in production, call backend API
     setTimeout(() => {
       const mockGDD = `
 # Game Design Document: ${gameTitle}
@@ -104,7 +98,6 @@ ${gameDescription}
   };
 
   const handleDownloadGDD = () => {
-    // Only execute on client side
     if (typeof window === 'undefined') return;
     
     const element = document.createElement("a");
@@ -155,118 +148,74 @@ ${gameDescription}
               </div>
 
               <form onSubmit={handleGenerateGDD} className="space-y-6">
-                <div>
-                  <label htmlFor="gameTitle" className="block text-sm font-medium text-galaxy-silver mb-2">
-                    Game Title *
-                  </label>
-                  <input
-                    type="text"
-                    id="gameTitle"
-                    value={gameTitle}
-                    onChange={(e) => setGameTitle(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 border border-galaxy-cyan/30 rounded-md shadow-sm focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan bg-galaxy-secondary/50 text-white placeholder-galaxy-silver/60 galaxy-glow-soft"
-                    placeholder="Enter your game title"
-                  />
-                </div>
+                <FormInput
+                  id="gameTitle"
+                  label="Game Title *"
+                  value={gameTitle}
+                  onChange={(e) => setGameTitle(e.target.value)}
+                  required
+                  placeholder="Enter your game title"
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="gameGenre" className="block text-sm font-medium text-galaxy-silver mb-2">
-                      Genre *
-                    </label>
-                    <select
-                      id="gameGenre"
-                      value={gameGenre}
-                      onChange={(e) => setGameGenre(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 border border-galaxy-cyan/30 rounded-md shadow-sm focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan bg-galaxy-secondary/50 text-white galaxy-glow-soft"
-                    >
-                      <option value="">Select a genre</option>
-                      {genres.map((genre) => (
-                        <option key={genre} value={genre}>{genre}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="gamePlatform" className="block text-sm font-medium text-galaxy-silver mb-2">
-                      Platform *
-                    </label>
-                    <select
-                      id="gamePlatform"
-                      value={gamePlatform}
-                      onChange={(e) => setGamePlatform(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 border border-galaxy-cyan/30 rounded-md shadow-sm focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan bg-galaxy-secondary/50 text-white galaxy-glow-soft"
-                    >
-                      <option value="">Select a platform</option>
-                      {platforms.map((platform) => (
-                        <option key={platform} value={platform}>{platform}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="targetAudience" className="block text-sm font-medium text-galaxy-silver mb-2">
-                    Target Audience *
-                  </label>
-                  <select
-                    id="targetAudience"
-                    value={targetAudience}
-                    onChange={(e) => setTargetAudience(e.target.value)}
+                  <FormSelect
+                    id="gameGenre"
+                    label="Genre *"
+                    value={gameGenre}
+                    onChange={(e) => setGameGenre(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-galaxy-cyan/30 rounded-md shadow-sm focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan bg-galaxy-secondary/50 text-white galaxy-glow-soft"
-                  >
-                    <option value="">Select target audience</option>
-                    {audiences.map((audience) => (
-                      <option key={audience} value={audience}>{audience}</option>
-                    ))}
-                  </select>
-                </div>
+                    placeholder="Select a genre"
+                    options={genreOptions}
+                  />
 
-                <div>
-                  <label htmlFor="gameDescription" className="block text-sm font-medium text-galaxy-silver mb-2">
-                    Game Description *
-                  </label>
-                  <textarea
-                    id="gameDescription"
-                    value={gameDescription}
-                    onChange={(e) => setGameDescription(e.target.value)}
+                  <FormSelect
+                    id="gamePlatform"
+                    label="Platform *"
+                    value={gamePlatform}
+                    onChange={(e) => setGamePlatform(e.target.value)}
                     required
-                    rows={4}
-                    className="w-full px-3 py-2 border border-galaxy-cyan/30 rounded-md shadow-sm focus:outline-none focus:ring-galaxy-cyan focus:border-galaxy-cyan bg-galaxy-secondary/50 text-white placeholder-galaxy-silver/60 galaxy-glow-soft"
-                    placeholder="Describe your game concept, story, and key features..."
+                    placeholder="Select a platform"
+                    options={platformOptions}
                   />
                 </div>
 
+                <FormSelect
+                  id="targetAudience"
+                  label="Target Audience *"
+                  value={targetAudience}
+                  onChange={(e) => setTargetAudience(e.target.value)}
+                  required
+                  placeholder="Select target audience"
+                  options={audienceOptions}
+                />
+
+                <FormTextarea
+                  id="gameDescription"
+                  label="Game Description *"
+                  value={gameDescription}
+                  onChange={(e) => setGameDescription(e.target.value)}
+                  required
+                  rows={4}
+                  placeholder="Describe your game concept, story, and key features..."
+                />
+
                 <div className="flex justify-end">
-                  <button
+                  <Button
                     type="submit"
-                    disabled={isGenerating}
-                    className="bg-gradient-to-r from-galaxy-cyan to-galaxy-purple hover:from-galaxy-purple hover:to-galaxy-pink disabled:from-galaxy-secondary disabled:to-galaxy-secondary text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 flex items-center galaxy-glow-soft hover:scale-105 disabled:hover:scale-100 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    isLoading={isGenerating}
+                    rightIcon={
+                      !isGenerating && (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        Generate GDD
-                      </>
-                    )}
-                  </button>
+                      )
+                    }
+                  >
+                    Generate GDD
+                  </Button>
                 </div>
               </form>
-          </div>
+            </div>
           ) : (
             <div className="space-y-6">
               <div className="bg-galaxy-primary/60 backdrop-blur-md rounded-lg shadow-galaxy p-6 galaxy-border">
@@ -275,33 +224,42 @@ ${gameDescription}
                     Generated Game Design Document
                   </h2>
                   <div className="flex space-x-3">
-                    <button
+                    <Button
+                      variant="secondary"
+                      size="sm"
                       onClick={handleSaveGDD}
-                      className="bg-gradient-to-r from-galaxy-gold to-galaxy-pink hover:from-galaxy-pink hover:to-galaxy-purple text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center galaxy-glow-soft hover:scale-105 cursor-pointer"
+                      leftIcon={
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                      }
                     >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                      </svg>
                       Save
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
                       onClick={handleDownloadGDD}
-                      className="bg-gradient-to-r from-galaxy-cyan to-galaxy-purple hover:from-galaxy-purple hover:to-galaxy-pink text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center galaxy-glow-soft hover:scale-105 cursor-pointer"
+                      leftIcon={
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      }
                     >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
                       Download
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => setGeneratedGDD("")}
-                      className="bg-gradient-to-r from-galaxy-secondary to-galaxy-accent hover:from-galaxy-accent hover:to-galaxy-secondary text-galaxy-silver font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center galaxy-glow-soft hover:scale-105 cursor-pointer"
+                      leftIcon={
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      }
                     >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
                       Generate New
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="bg-galaxy-secondary/50 rounded-lg p-6 galaxy-glow-soft">
