@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import GalaxyDecorations from "@/components/GalaxyDecorations";
-import Header from "@/components/pages/home/Header";
+
 import StatsCards from "@/components/pages/home/StatsCards";
 import AITools from "@/components/pages/home/AITools";
 import ProjectsTable from "@/components/pages/home/ProjectsTable";
@@ -138,7 +138,7 @@ export default function Home() {
       <div className="min-h-screen relative">
         <GalaxyDecorations />
         
-        <Header onLogout={logout} />
+        
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
           {/* Welcome Section */}

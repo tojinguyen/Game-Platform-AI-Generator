@@ -111,31 +111,18 @@ ${gameDescription}
 
   return (
     <GalaxyBackground>
-      <div className="min-h-screen relative">
-        <GalaxyDecorations />
-        
-        {/* Header */}
-        <header className="bg-galaxy-primary/80 backdrop-blur-md shadow-galaxy border-b border-galaxy-cyan/20 sticky top-0 z-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => router.back()}
-                  className="text-galaxy-cyan hover:text-galaxy-pink transition-colors duration-200 cursor-pointer"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <h1 className="text-2xl font-bold galaxy-text">
-                  AI GDD Generator
-                </h1>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="h-full overflow-y-auto">
 
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+                    <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2 galaxy-text">
+              AI GDD Generator
+            </h1>
+            <p className="text-galaxy-silver">
+              Generate comprehensive Game Design Documents using AI.
+            </p>
+          </div>
+
           {!generatedGDD ? (
             <div className="bg-galaxy-primary/60 backdrop-blur-md rounded-lg shadow-galaxy p-8 galaxy-border">
               <div className="mb-8">
