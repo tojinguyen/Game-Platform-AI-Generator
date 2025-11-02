@@ -1,21 +1,20 @@
-package handlers
+package token
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/pkg/token"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
-func getAuthClaims(c echo.Context) (*token.JwtCustomClaims, error) {
+func getAuthClaims(c echo.Context) (*JwtCustomClaims, error) {
 	user, ok := c.Get("user").(*jwt.Token)
 	if !ok {
 		return nil, errors.New("missing user data in context")
 	}
 
-	claims, ok := user.Claims.(*token.JwtCustomClaims)
+	claims, ok := user.Claims.(*JwtCustomClaims)
 	if !ok {
 		return nil, fmt.Errorf("invalid claims %T, expected *token.JwtCustomClaims", user.Claims)
 	}
