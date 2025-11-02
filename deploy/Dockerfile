@@ -9,17 +9,17 @@ ARG WEB_PRIVATE_KEY
 ARG GIT_DOMAIN
 
 RUN mkdir ~/.ssh && \
-    echo "$WEB_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa && \
-    chmod 600 ~/.ssh/id_rsa && \
-    ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
+  echo "$WEB_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa && \
+  chmod 600 ~/.ssh/id_rsa && \
+  ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
 
 COPY . .
 
 RUN git config --global http.sslVerify true &&\
-    go install github.com/swaggo/swag/cmd/swag@v1.8.10 &&\
-    $GOPATH/bin/swag init -g cmd/main.go &&\
-    go get -v ./... &&\
-    go build -o demo-echo ./cmd
+  go install github.com/swaggo/swag/cmd/swag@v1.8.10 &&\
+  $GOPATH/bin/swag init -g cmd/main.go &&\
+  go get -v ./... &&\
+  go build -o demo-echo ./cmd
 
 FROM alpine
 
@@ -33,6 +33,6 @@ RUN ["chmod", "+x", "./demo-echo"]
 
 CMD ["sh", "-c", "\
   /wait && \
-  go tool goose -dir './migrations' mysql ${DB_USER}:${DB_PASSWORD}@tcp(mysql:${DB_PORT})/${DB_NAME} up && \
+  go tool goose -dir './migrations' postgres ${DB_USER}:${DB_PASSWORD}@tcp(postgres:${DB_PORT})/${DB_NAME} up && \
   ./demo-echo \
-"]
+  "]

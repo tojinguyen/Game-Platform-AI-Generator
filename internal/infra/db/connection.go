@@ -20,7 +20,7 @@ func NewGormDB(cfg config.DBConfig) (*gorm.DB, error) {
 
 func dsn(c config.DBConfig) string {
 	return fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Ho_Chi_Minh",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Ho_Chi_Minh",
 		c.Host, c.User, c.Password, c.Name, c.Port,
 	)
 }
