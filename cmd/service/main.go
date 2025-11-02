@@ -9,21 +9,16 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/game-platform-ai/golang-echo-boilerplate/cmd/service/modulebuilder"
 	_ "github.com/game-platform-ai/golang-echo-boilerplate/docs"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/infra/db"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/pkg/token"
-	repositories "github.com/game-platform-ai/golang-echo-boilerplate/internal/repositories/user-auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server"
-	handlers "github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers/user-auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/routes"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user-auth/auth"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user-auth/oauth"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user-auth/user"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/slogx"
 
 	"github.com/caarlos0/env/v11"
-	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
@@ -54,50 +49,39 @@ func main() {
 }
 
 func run() error {
+	// Load env file
 	if err := godotenv.Load(); err != nil {
 		return fmt.Errorf("load env file: %w", err)
 	}
 
+	// Parse config from env
 	var cfg config.Config
 	if err := env.Parse(&cfg); err != nil {
 		return fmt.Errorf("parse env: %w", err)
 	}
 
+	// Init logger
 	if err := slogx.Init(cfg.Logger); err != nil {
 		return fmt.Errorf("init logger: %w", err)
 	}
 
+	// Init DB connection
 	traceStarter := slogx.NewTraceStarter(uuid.NewV7)
 
+	// Init DB connection
 	gormDB, err := db.NewGormDB(cfg.DB)
 	if err != nil {
 		return fmt.Errorf("new db connection: %w", err)
 	}
+	defer func() {
+		dbConnection, _ := gormDB.DB()
+		dbConnection.Close()
+	}()
 
-	userRepository := repositories.NewUserRepository(gormDB)
-	userService := user.NewService(userRepository)
-
-	provider, err := oidc.NewProvider(context.Background(), "https://accounts.google.com")
+	userAuthHandlers, err := modulebuilder.BuildUserAuthModule(cfg, gormDB)
 	if err != nil {
-		return fmt.Errorf("oidc.NewProvider: %w", err)
+		return fmt.Errorf("build user-auth module: %w", err)
 	}
-
-	verifier := provider.Verifier(&oidc.Config{ClientID: cfg.OAuth.ClientID})
-
-	tokenService := token.NewService(
-		time.Now,
-		cfg.Auth.AccessTokenDuration,
-		cfg.Auth.RefreshTokenDuration,
-		[]byte(cfg.Auth.AccessSecret),
-		[]byte(cfg.Auth.RefreshSecret),
-	)
-
-	authService := auth.NewService(userService, tokenService)
-	oAuthService := oauth.NewService(verifier, tokenService, userService)
-
-	authHandler := handlers.NewAuthHandler(authService)
-	oAuthHandler := handlers.NewOAuthHandler(oAuthService)
-	registerHandler := handlers.NewRegisterHandler(userService)
 
 	// Configure middleware with the custom claims type
 	echoJWTConfig := echojwt.Config{
@@ -107,16 +91,15 @@ func run() error {
 		SigningKey: []byte(cfg.Auth.AccessSecret),
 	}
 
-	echoJWTMiddleware := echojwt.WithConfig(echoJWTConfig)
+	allHandlers := routes.Handlers{
+		AuthHandler:       userAuthHandlers.AuthHandler,
+		OAuthHandler:      userAuthHandlers.OAuthHandler,
+		RegisterHandler:   userAuthHandlers.RegisterHandler,
+		EchoJWTMiddleware: echojwt.WithConfig(echoJWTConfig),
+	}
 
 	engine := echo.New()
-	err = routes.ConfigureRoutes(traceStarter, engine, routes.Handlers{
-		AuthHandler:       authHandler,
-		OAuthHandler:      oAuthHandler,
-		RegisterHandler:   registerHandler,
-		EchoJWTMiddleware: echoJWTMiddleware,
-	})
-	if err != nil {
+	if err := routes.ConfigureRoutes(traceStarter, engine, allHandlers); err != nil {
 		return fmt.Errorf("configure routes: %w", err)
 	}
 
@@ -136,15 +119,6 @@ func run() error {
 
 	if err := app.Shutdown(shutdownCtx); err != nil {
 		return fmt.Errorf("http server shutdown: %w", err)
-	}
-
-	dbConnection, err := gormDB.DB()
-	if err != nil {
-		return fmt.Errorf("get db connection: %w", err)
-	}
-
-	if err := dbConnection.Close(); err != nil {
-		return fmt.Errorf("close db connection: %w", err)
 	}
 
 	return nil
