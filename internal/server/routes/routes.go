@@ -1,3 +1,4 @@
+// Package routes configures the HTTP routes for the Echo web server.
 package routes
 
 import (

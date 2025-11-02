@@ -1,3 +1,4 @@
+// Package migrations embeds SQL migration files for database schema management.
 package migrations
 
 import "embed"

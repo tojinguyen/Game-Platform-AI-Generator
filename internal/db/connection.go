@@ -1,3 +1,4 @@
+// Package db provides database connection using GORM and PostgreSQL driver.
 package db
 
 import (

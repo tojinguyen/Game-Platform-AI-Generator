@@ -1,3 +1,4 @@
+// Package oauth provides user authentication services using OAuth 2.0.
 package oauth
 
 import (
@@ -5,9 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
-
 	"github.com/coreos/go-oidc/v3/oidc"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 )
 
 type Service struct {

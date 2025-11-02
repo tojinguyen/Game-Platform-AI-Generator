@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/requests"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 	"github.com/google/uuid"
 
 	"golang.org/x/crypto/bcrypt"

@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
-
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/pkg/token"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )

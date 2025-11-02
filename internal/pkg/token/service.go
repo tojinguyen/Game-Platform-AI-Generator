@@ -1,3 +1,4 @@
+// Package token provides JWT token generation and parsing services.
 package token
 
 import (
@@ -5,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 	"github.com/google/uuid"
 
 	"github.com/golang-jwt/jwt/v5"

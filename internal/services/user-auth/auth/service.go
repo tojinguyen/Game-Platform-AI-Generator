@@ -1,3 +1,4 @@
+// Package auth provides user authentication services including login and token refresh.
 package auth
 
 import (
@@ -5,10 +6,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/token"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/requests"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/responses"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/pkg/token"
 	"github.com/google/uuid"
 
 	"golang.org/x/crypto/bcrypt"

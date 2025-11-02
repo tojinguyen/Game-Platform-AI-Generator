@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 	"github.com/google/uuid"
 
 	"gorm.io/gorm"

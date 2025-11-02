@@ -1,0 +1,21 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  "gopls": {
+    "ui.semanticTokens": true,
+    "directoryFilters": ["-vendor"],
+    "allowModfileModifications": true,
+    "symbolMatcher": "FastFuzzy",
+    "experimentalPostfixCompletions": true,
+    "staticcheck": true,
+    "experimentalWorkspaceModule": true,
+    "completeUnimported": true,
+      
+    "analyses": {
+      "ST1000": false
+    }
+  },
+}

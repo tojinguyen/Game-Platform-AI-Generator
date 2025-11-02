@@ -1,3 +1,4 @@
+// Package handlers provides HTTP handlers for authentication-related operations.
 package handlers
 
 import (
@@ -5,9 +6,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
+	commonResponses "github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/common"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/requests"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/responses"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 
 	"github.com/labstack/echo/v4"
 )
@@ -42,22 +44,22 @@ func NewAuthHandler(authService authService) *AuthHandler {
 func (h *AuthHandler) Login(c echo.Context) error {
 	var request requests.LoginRequest
 	if err := c.Bind(&request); err != nil {
-		return responses.ErrorResponse(c, http.StatusBadRequest, "Failed to bind request")
+		return commonResponses.ErrorResponse(c, http.StatusBadRequest, "Failed to bind request")
 	}
 
 	if err := request.Validate(); err != nil {
-		return responses.ErrorResponse(c, http.StatusBadRequest, "Required fields are empty or not valid")
+		return commonResponses.ErrorResponse(c, http.StatusBadRequest, "Required fields are empty or not valid")
 	}
 
 	response, err := h.authService.GenerateToken(c.Request().Context(), &request)
 	switch {
 	case errors.Is(err, models.ErrUserNotFound), errors.Is(err, models.ErrInvalidPassword):
-		return responses.ErrorResponse(c, http.StatusUnauthorized, "Invalid credentials")
+		return commonResponses.ErrorResponse(c, http.StatusUnauthorized, "Invalid credentials")
 	case err != nil:
-		return responses.ErrorResponse(c, http.StatusInternalServerError, "Internal Server Error")
+		return commonResponses.ErrorResponse(c, http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	return responses.Response(c, http.StatusOK, response)
+	return commonResponses.Response(c, http.StatusOK, response)
 }
 
 // RefreshToken godoc
@@ -75,16 +77,16 @@ func (h *AuthHandler) Login(c echo.Context) error {
 func (h *AuthHandler) RefreshToken(c echo.Context) error {
 	var request requests.RefreshRequest
 	if err := c.Bind(&request); err != nil {
-		return responses.ErrorResponse(c, http.StatusBadRequest, "Failed to bind request")
+		return commonResponses.ErrorResponse(c, http.StatusBadRequest, "Failed to bind request")
 	}
 
 	response, err := h.authService.RefreshToken(c.Request().Context(), &request)
 	switch {
 	case errors.Is(err, models.ErrUserNotFound), errors.Is(err, models.ErrInvalidAuthToken):
-		return responses.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
+		return commonResponses.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
 	case err != nil:
-		return responses.ErrorResponse(c, http.StatusInternalServerError, "Internal Server Error")
+		return commonResponses.ErrorResponse(c, http.StatusInternalServerError, "Internal Server Error")
 	}
 
-	return responses.Response(c, http.StatusOK, response)
+	return commonResponses.Response(c, http.StatusOK, response)
 }

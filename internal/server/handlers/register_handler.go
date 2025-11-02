@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/models"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/requests"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/responses"
+	responses "github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/common"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/dtos/user-auth/requests"
+	models "github.com/game-platform-ai/golang-echo-boilerplate/internal/models/user-auth"
 
 	"github.com/labstack/echo/v4"
 )
