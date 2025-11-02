@@ -15,6 +15,7 @@ RUN go mod download
 
 RUN go install github.com/githubnemo/CompileDaemon@latest
 RUN go install github.com/swaggo/swag/cmd/swag@v1.8.10
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
 COPY . . 
 RUN swag init -g cmd/service/main.go
@@ -25,6 +26,6 @@ RUN chmod +x /wait
 # Command to run the executable.
 CMD ["sh", "-c", "\
   /wait && \
-  go tool goose -dir './migrations' postgres ${DB_CONNECTION} up && \
+  goose -dir './migrations' postgres \"${DB_CONNECTION}\" up && \
   CompileDaemon --build='go build cmd/service/main.go' --command='./main' --color \
   "]
