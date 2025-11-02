@@ -11,11 +11,11 @@ import (
 
 	_ "github.com/game-platform-ai/golang-echo-boilerplate/docs"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/config"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/db"
+	"github.com/game-platform-ai/golang-echo-boilerplate/internal/infra/db"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/pkg/token"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/repositories"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server"
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers"
+	handlers "github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers/user-auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/routes"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user-auth/auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/services/user-auth/oauth"

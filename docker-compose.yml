@@ -8,35 +8,33 @@ services:
     volumes:
       - ./:/app/
     depends_on:
-      - mysql
+      - postgres
     env_file:
       - .env
     environment:
-      - DB_CONNECTION=${DB_USER}:${DB_PASSWORD}@tcp(mysql:${DB_PORT})/${DB_NAME}
+      - DB_CONNECTION=${DB_USER}:${DB_PASSWORD}@tcp(postgres:${DB_PORT})/${DB_NAME}
       - WAIT_HOSTS=${DB_HOST}:${DB_PORT}
       - WAIT_BEFORE_HOSTS=15
       - WAIT_SLEEP_INTERVAL=3
     networks:
       - user-service-network
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_db
+  postgres:
+    image: postgres:14
+    container_name: postgres_db
     ports:
       - ${EXPOSE_DB_PORT}:${DB_PORT}
     environment:
-      - MYSQL_ROOT_HOST=${DB_HOST}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
-      - database_mysql:/var/lib/mysql
+      - database_postgres:/var/lib/postgresql/data
     networks:
       - user-service-network
 
 volumes:
-  database_mysql:
+  database_postgres:
 
 networks:
   user-service-network:

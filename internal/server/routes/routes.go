@@ -2,7 +2,7 @@
 package routes
 
 import (
-	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers"
+	handlers "github.com/game-platform-ai/golang-echo-boilerplate/internal/server/handlers/user-auth"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/server/middleware"
 	"github.com/game-platform-ai/golang-echo-boilerplate/internal/slogx"
 
