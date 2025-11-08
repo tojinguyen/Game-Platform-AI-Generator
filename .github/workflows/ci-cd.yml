@@ -1,0 +1,53 @@
+name: CI/CD for Game App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Login Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
+
+      # 3. Build Docker image
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.ACR_NAME }}.azurecr.io/game-app:${GITHUB_SHA::8}
+          docker build -t $IMAGE_NAME .
+
+      # 4. Login ACR
+      - name: Login ACR
+        run: |
+          az acr login --name ${{ secrets.ACR_NAME }}
+
+      # 5. Push Docker image
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME=${{ secrets.ACR_NAME }}.azurecr.io/game-app:${GITHUB_SHA::8}
+          docker push $IMAGE_NAME
+
+      # 6. Deploy to Azure Container App
+      - name: Deploy to Azure Container App
+        run: |
+          IMAGE_NAME=${{ secrets.ACR_NAME }}.azurecr.io/game-app:${GITHUB_SHA::8}
+          az containerapp update \
+            --name game-app \
+            --resource-group game-platform-rg \
+            --image $IMAGE_NAME
