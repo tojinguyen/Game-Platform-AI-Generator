@@ -51,7 +51,7 @@ func main() {
 func run() error {
 	// Load env file
 	if err := godotenv.Load(); err != nil {
-		return fmt.Errorf("load env file: %w", err)
+		slog.Warn("Could not load .env file, using environment variables", "err", err.Error())
 	}
 
 	// Parse config from env
