@@ -30,7 +30,7 @@ jobs:
       - name: Build Docker image
         run: |
           IMAGE_NAME=${{ secrets.ACR_NAME }}.azurecr.io/game-app:${GITHUB_SHA::8}
-          docker build -f ./deploy/Dockerfile -t $IMAGE_NAME .
+          docker build -f ./deploy/Dockerfile -t "$IMAGE_NAME" .
 
       # 4. Login ACR
       - name: Login ACR
