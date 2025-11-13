@@ -1,5 +1,5 @@
 services:
-  game-platform-ai-generator:
+  api:
     container_name: game-platform-ai-generator
     build: .
     ports:
