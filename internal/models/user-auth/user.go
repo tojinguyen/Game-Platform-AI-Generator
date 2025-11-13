@@ -41,7 +41,6 @@ type User struct {
 	Gender      Gender `gorm:"type:varchar(20)"`
 	Address     string `gorm:"type:text"`
 
-	// Auth & Role
 	LoginProvider LoginProvider `gorm:"type:varchar(50);default:'local'"`
 	LastLoginAt   *time.Time
 }

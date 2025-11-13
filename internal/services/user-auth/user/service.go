@@ -18,6 +18,7 @@ type userRepository interface {
 	GetByID(ctx context.Context, id uuid.UUID) (models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (models.User, error)
 	CreateUserAndOAuthProvider(ctx context.Context, user *models.User, oauthProvider *models.OAuthProviders) error
+	Update(ctx context.Context, user *models.User) error
 }
 
 type Service struct {
@@ -38,9 +39,15 @@ func (s *Service) Register(ctx context.Context, request *requests.RegisterReques
 	}
 
 	user := &models.User{
-		Email:        request.Email,
-		FullName:     request.Name,
-		PasswordHash: string(encryptedPassword),
+		Email:         request.Email,
+		Username:      request.Username,
+		FullName:      request.FullName,
+		Phone:         request.Phone,
+		DateOfBirth:   request.DateOfBirth,
+		Gender:        models.Gender(request.Gender),
+		Address:       request.Address,
+		PasswordHash:  string(encryptedPassword),
+		LoginProvider: models.Local,
 	}
 
 	if err := s.userRepository.Create(ctx, user); err != nil {
@@ -72,6 +79,42 @@ func (s *Service) CreateUserAndOAuthProvider(ctx context.Context, user *models.U
 	err := s.userRepository.CreateUserAndOAuthProvider(ctx, user, oauthProvider)
 	if err != nil {
 		return fmt.Errorf("create user and oauth provider from repository: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) UpdateProfile(ctx context.Context, userID uuid.UUID, request *requests.UpdateProfileRequest) error {
+	user, err := s.userRepository.GetByID(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("get user by id from repository: %w", err)
+	}
+
+	// Update only provided fields
+	if request.Username != nil {
+		user.Username = *request.Username
+	}
+	if request.FullName != nil {
+		user.FullName = *request.FullName
+	}
+	if request.Phone != nil {
+		user.Phone = *request.Phone
+	}
+	if request.DateOfBirth != nil {
+		user.DateOfBirth = request.DateOfBirth
+	}
+	if request.Gender != nil {
+		user.Gender = models.Gender(*request.Gender)
+	}
+	if request.Address != nil {
+		user.Address = *request.Address
+	}
+	if request.AvatarURL != nil {
+		user.AvatarURL = *request.AvatarURL
+	}
+
+	if err := s.userRepository.Update(ctx, &user); err != nil {
+		return fmt.Errorf("update user in repository: %w", err)
 	}
 
 	return nil

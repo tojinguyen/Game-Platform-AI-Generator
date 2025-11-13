@@ -15,6 +15,7 @@ type Handlers struct {
 	AuthHandler     *handlers.AuthHandler
 	OAuthHandler    *handlers.OAuthHandler
 	RegisterHandler *handlers.RegisterHandler
+	ProfileHandler  *handlers.ProfileHandler
 
 	EchoJWTMiddleware echo.MiddlewareFunc
 }
@@ -45,6 +46,9 @@ func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Han
 	protectedGroup := apiGroup.Group("")
 	protectedGroup.Use(middleware.NewRequestDebugger())
 	protectedGroup.Use(handlers.EchoJWTMiddleware)
+
+	// Protected endpoints - authentication required
+	protectedGroup.PUT("/profile", handlers.ProfileHandler.UpdateProfile)
 
 	return nil
 }

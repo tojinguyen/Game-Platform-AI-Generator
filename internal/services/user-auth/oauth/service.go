@@ -56,9 +56,22 @@ func (s Service) GoogleOAuth(ctx context.Context, token string) (accessToken, re
 			return "", "", 0, fmt.Errorf("get user: %w", err)
 		}
 
+		// Generate username from email (part before @)
+		username := claims.Email
+		if atIndex := len(claims.Email); atIndex > 0 {
+			for i, c := range claims.Email {
+				if c == '@' {
+					username = claims.Email[:i]
+					break
+				}
+			}
+		}
+
 		user = models.User{
-			Email:    claims.Email,
-			FullName: claims.Name,
+			Email:         claims.Email,
+			Username:      username,
+			FullName:      claims.Name,
+			LoginProvider: models.GoogleProvider,
 		}
 
 		oAuthProvider := models.OAuthProviders{

@@ -80,3 +80,11 @@ func (r *UserRepository) CreateUserAndOAuthProvider(ctx context.Context, user *m
 
 	return nil
 }
+
+func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
+	if err := r.db.WithContext(ctx).Save(user).Error; err != nil {
+		return fmt.Errorf("execute update user query: %w", err)
+	}
+
+	return nil
+}

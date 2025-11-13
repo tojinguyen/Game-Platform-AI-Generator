@@ -20,6 +20,7 @@ type userAuthHandlers struct {
 	AuthHandler     *handlers.AuthHandler
 	OAuthHandler    *handlers.OAuthHandler
 	RegisterHandler *handlers.RegisterHandler
+	ProfileHandler  *handlers.ProfileHandler
 }
 
 // BuildUserAuthModule xây dựng module user-auth bao gồm repository, service và handler.
@@ -51,10 +52,12 @@ func BuildUserAuthModule(cfg config.Config, db *gorm.DB) (userAuthHandlers, erro
 	authHandler := handlers.NewAuthHandler(authService)
 	oAuthHandler := handlers.NewOAuthHandler(oAuthService)
 	registerHandler := handlers.NewRegisterHandler(userService)
+	profileHandler := handlers.NewProfileHandler(userService)
 
 	return userAuthHandlers{
 		AuthHandler:     authHandler,
 		OAuthHandler:    oAuthHandler,
 		RegisterHandler: registerHandler,
+		ProfileHandler:  profileHandler,
 	}, nil
 }

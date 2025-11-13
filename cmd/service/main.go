@@ -95,6 +95,7 @@ func run() error {
 		AuthHandler:       userAuthHandlers.AuthHandler,
 		OAuthHandler:      userAuthHandlers.OAuthHandler,
 		RegisterHandler:   userAuthHandlers.RegisterHandler,
+		ProfileHandler:    userAuthHandlers.ProfileHandler,
 		EchoJWTMiddleware: echojwt.WithConfig(echoJWTConfig),
 	}
 
