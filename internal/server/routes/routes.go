@@ -20,7 +20,7 @@ type Handlers struct {
 }
 
 func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Handlers) error {
-	// CORS middleware - cho phép tất cả origins, methods, headers
+	// CORS middleware
 	engine.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"*"},
@@ -30,23 +30,21 @@ func ConfigureRoutes(tracer *slogx.TraceStarter, engine *echo.Echo, handlers Han
 
 	engine.Use(middleware.NewRequestLogger(tracer))
 
-	// Swagger documentation (không cần prefix)
+	// Swagger documentation
 	engine.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	// API group với prefix api/external/v1
+	// API group with prefix api/external/v1
 	apiGroup := engine.Group("/api/external/v1")
 
-	// Public endpoints - không cần authentication
+	// Public endpoints - no authentication required
 	apiGroup.POST("/login", handlers.AuthHandler.Login)
 	apiGroup.POST("/register", handlers.RegisterHandler.Register)
 	apiGroup.POST("/google-oauth", handlers.OAuthHandler.GoogleOAuth)
 	apiGroup.POST("/refresh", handlers.AuthHandler.RefreshToken)
 
-	// Protected endpoints group - cần authentication
 	protectedGroup := apiGroup.Group("")
 	protectedGroup.Use(middleware.NewRequestDebugger())
 	protectedGroup.Use(handlers.EchoJWTMiddleware)
-	// Có thể thêm các protected endpoints ở đây sau này
 
 	return nil
 }
